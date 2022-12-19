@@ -9,7 +9,11 @@ export function deterministicPartitionKey(event) {
 
   if (event) {
     // reduce options, make sure that event.partitionKey is string
-    partitionKey = event.partitionKey + "" || JSON.stringify(event);
+    partitionKey = event.partitionKey || JSON.stringify(event);
+  }
+
+  if (typeof partitionKey !== "string") {
+    partitionKey = JSON.stringify(partitionKey);
   }
 
   // create hash

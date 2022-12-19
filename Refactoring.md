@@ -9,3 +9,11 @@ You've been asked to refactor the function `deterministicPartitionKey` in [`dpk.
 You will be graded on the exhaustiveness and quality of your unit tests, the depth of your refactor, and the level of insight into your thought process provided by the written explanation.
 
 ## Your Explanation Here
+
+The refactored version:
+
+1. Modern imports for createHash
+2. Removes unnecessary if statements
+3. Reduced number of variables used
+4. Add default value for the partitionKey. Should throw error if null/undefined.
+5. Improve variable name
