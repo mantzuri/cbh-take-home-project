@@ -1,28 +1,21 @@
-const crypto = require("crypto");
+//  Converted to an ES module to CommonJS
+import { createHash } from "crypto";
 
-exports.deterministicPartitionKey = (event) => {
+export function deterministicPartitionKey(event) {
   const TRIVIAL_PARTITION_KEY = "0";
   const MAX_PARTITION_KEY_LENGTH = 256;
-  let candidate;
+  // Rename to meaningful name, prevent returning undefined value
+  let partitionKey = TRIVIAL_PARTITION_KEY;
 
   if (event) {
-    if (event.partitionKey) {
-      candidate = event.partitionKey;
-    } else {
-      const data = JSON.stringify(event);
-      candidate = crypto.createHash("sha3-512").update(data).digest("hex");
-    }
+    // reduce options, make sure that event.partitionKey is string
+    partitionKey = event.partitionKey + "" || JSON.stringify(event);
   }
 
-  if (candidate) {
-    if (typeof candidate !== "string") {
-      candidate = JSON.stringify(candidate);
-    }
-  } else {
-    candidate = TRIVIAL_PARTITION_KEY;
+  // create hash
+  if (partitionKey.length > MAX_PARTITION_KEY_LENGTH) {
+    partitionKey = createHash("sha3-512").update(partitionKey).digest("hex");
   }
-  if (candidate.length > MAX_PARTITION_KEY_LENGTH) {
-    candidate = crypto.createHash("sha3-512").update(candidate).digest("hex");
-  }
-  return candidate;
-};
+
+  return partitionKey;
+}
